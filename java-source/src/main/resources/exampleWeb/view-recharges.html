@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Persistent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+         function getCoupons() {
+            var port = getPortNumber();
+            if(port == 10009) {
+                document.getElementById('loader').style.visibility = 'visible';
+                var xmlHttpReq = new XMLHttpRequest();
+                xmlHttpReq.onreadystatechange = function() {
+                    if(this.readyState == 4) {
+                        document.getElementById('loader').style.visibility  = "hidden";
+                        document.getElementById("coupons").innerHTML = this.responseText;
+                    }
+                };
+            xmlHttpReq.open("GET", "http://localhost:" + port + "/api/rewards/recharge-vault-data/", true);
+            xmlHttpReq.send();
+            }
+            else {
+                alert('Invalid port number');
+            }
+         }
+
+          function getPortNumber() {
+
+            var url = window.location.href;
+            var splitUrl = url.split("/");
+            var urlArray = splitUrl[2];
+            var portSplit = urlArray.split(":");
+            var port  = portSplit[1].toString()
+            return port;
+          }
+
+     </script>
+
+    <style>
+         body
+         {
+         background-color: white;
+         }
+         div#result
+         {
+         color:black;
+         font-size: 15px;
+         }
+         table.background
+         {
+         background: url("simple.jpg") no-repeat;
+         }
+         table, th, td
+         {
+         border-collapse: collapse;
+         }
+         th, td
+         {
+         padding: 15px;
+         text-align: left;
+         }
+         h5
+         {
+         color: orange;
+         font-family : initial;
+         }
+         h1
+         {
+         font-size : 36px;
+         font-family : initial;
+         color: Black;
+         }
+
+         .error
+        {
+           color:red;
+           font-family:verdana, Helvetica;
+        }
+
+
+      </style>
+
+</head>
+<body>
+<form id="myForm" name="myForm">
+    <center>
+        <h1>Vendor Recharge management</h1>
+        <h5>View Recharges</h5>
+        <img src="persistent.png" alt="persistent" width="100" height="64">
+        <br/>
+        <br/>
+        <input type ="button" class="btn btn-success" data-toggle="collapse" data-target="#result" name = "coupon" id ="coupon" value = "View Recharges" onclick ="getCoupons();">
+    </center>
+</form>
+<center>
+    <div id ="loader" style="visibility : hidden">
+        <img src="loadingimage.gif" alt="Smiley face" height="60" width="62">
+    </div>
+    <div id ="coupons">
+    </div>
+</center>
+
+</body>
+</html>

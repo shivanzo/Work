@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AmazonPay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+         function getCoupons() {
+             var xmlHttpReq = new XMLHttpRequest();
+             xmlHttpReq.onreadystatechange = function() {
+                 if(this.readyState == 4) {
+                     document.getElementById("coupons").innerHTML = this.responseText;
+                 }
+             };
+            xmlHttpReq.open("GET", "http://localhost:10012/api/rewards/approval-data/", true);
+             xmlHttpReq.send();
+         }
+
+          function approveCoupon() {
+              var port = getPortNumber();
+              getCoupons();
+              if(port == 10012)
+              {
+              xmlHttpReq = new XMLHttpRequest();
+              xmlHttpReq.open("POST", "http://localhost:10012/api/rewards/coupon-verifications/", true);
+              xmlHttpReq.onreadystatechange = displayResponse;
+              xmlHttpReq.setRequestHeader("Content-Type", "application/json");
+              var linearId = document.getElementById("linearId").value.trim();
+              var data = JSON.stringify({"linearId": linearId});
+              xmlHttpReq.send(data);
+              }
+              else {
+                alert('Invalid port number');
+              }
+          }
+
+          function displayResponse() {
+
+           if(xmlHttpReq.readyState == 4  ) {
+           alert(xmlHttpReq.responseText);
+          document.getElementById("outputmessage").innerHTML = xmlHttpReq.responseText;
+          getCoupons();
+          $('#refresh').removeClass('hide');
+          document.getElementById('coupons').style.visibility="hidden";
+          }
+
+          }
+
+          function getPortNumber() {
+
+            var url = window.location.href;
+            var splitUrl = url.split("/");
+            var urlArray = splitUrl[2];
+            var portSplit = urlArray.split(":");
+           var port  = portSplit[1].toString()
+            return port;
+          }
+      </script>
+    <style>
+         div#outputmessage {
+         color:Black;
+         font-size: 15px;
+         }
+         table#output {
+         border-collapse: collapse;
+         border: 1px solid grey;
+         }
+         body {
+         background-color: white;
+         }
+         label {
+         color :black;
+         }
+         table, th, td {
+         border-collapse: collapse;
+         border: 1px solid #279aff;
+         background-color : #279aff;
+         }
+         th, td {
+         padding: 15px;
+         text-align: left;
+         }
+         h1 {
+         font-size : 36px;
+         font-family : fantasy;
+         color: black;
+         }
+         h5 {
+         color: #CB3C3C;
+         font-family : fantasy;
+         }
+      </style>
+</head>
+<body>
+<center>
+    <h1>Amazon Approval ADMIN</h1>
+    <h5>Payments now made simpler</h5>
+    <img src="Amazonpay.png" alt="amazonpay" width="100" height="29">
+    <br/>
+    <br/>
+    <table>
+        <tr>
+            <td><label class="text-white">Coupon Id</label></td>
+            <td><input type ="text" class="form-control input-sm" name="linearId" id ="linearId" placeholder="Enter coupon id" required></td>
+        </tr>
+    </table>
+    <br/>
+    <td><input type ="button" class="btn btn-primary" name = "coupon" id ="coupon" value = "Approve" onclick ="approveCoupon();"></td>
+</center>
+<br/>
+<br/>
+<center>
+    <div id ="coupons" name ="coupons"> </div>
+    <br/>
+    <div id="outputmessage" name="outputmessage"> </div>
+</center>
+</body>
+</html>
